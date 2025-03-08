@@ -1,84 +1,64 @@
----
-title: 1. Creating a New Project
----
+app ETH {
+  wasp: {
+    version: "^0.16.0"
+  },
+  title: "ETH",
+  client: {
+    rootComponent: import { Layout } from "@src/Layout.jsx",
+  },
+  auth: {
+    userEntity: User,
+    methods: {
+      usernameAndPassword: {}
+    },
+    onAuthFailedRedirectTo: "/login",
+    onAuthSucceededRedirectTo: "/"
+  },
+}
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
+route LoginRoute { path: "/login", to: LoginPage }
+page LoginPage {
+  component: import Login from "@src/pages/auth/Login.jsx"
+}
+route SignupRoute { path: "/signup", to: SignupPage }
+page SignupPage {
+  component: import Signup from "@src/pages/auth/Signup.jsx"
+}
 
-:::info
-You'll need to have the latest version of Wasp installed locally to follow this tutorial. If you haven't installed it yet, check out the [QuickStart](../quick-start) guide!
-:::
+action createCurriculum {
+  fn: import { createCurriculum } from "@src/actions.js",
+  entities: [Curriculum]
+}
 
-In this section, we'll guide you through the process of creating a simple Todo app with Wasp. In the process, we'll take you through the most important and useful features of Wasp.
+action createRecommendation {
+  fn: import { createRecommendation } from "@src/actions.js",
+  entities: [Curriculum, Recommendation]
+}
 
-<img alt="How Todo App will work once it is done"
-src={useBaseUrl('img/todo-app-tutorial-intro.gif')}
-style={{ border: "1px solid black" }}
-/>
-<br />
-<br />
+query getCurriculums {
+  fn: import { getCurriculums } from "@src/queries.js",
+  entities: [Curriculum]
+}
 
-If you get stuck at any point (or just want to chat), reach out to us on [Discord](https://discord.gg/rzdnErX) and we will help you!
+query getRecommendations {
+  fn: import { getRecommendations } from "@src/queries.js",
+  entities: [Recommendation]
+}
 
-You can find the complete code of the app we're about to build [here](https://github.com/wasp-lang/wasp/tree/release/examples/tutorials/TodoApp).
+route HomeRoute { path: "/", to: HomePage }
+page HomePage {
+  component: import HomePage from "@src/pages/Home.jsx",
+  authRequired: false
+}
 
-## Creating a Project
+route CurriculumRoute { path: "/curriculum", to: CurriculumPage }
+page CurriculumPage {
+  component: import CurriculumPage from "@src/pages/Curriculum.jsx",
+  authRequired: true
+}
 
-To setup a new Wasp project, run the following command in your terminal
-
-```sh
-$ wasp new TodoApp
-```
-
-Enter the newly created directory and start the development server:
-
-```sh
-$ cd TodoApp
-$ wasp start
-```
-
-`wasp start` will take a bit of time to start the server the first time you run it in a new project.
-
-You will see log messages from the client, server, and database setting themselves up. When everything is ready, a new tab should open in your browser at `http://localhost:3000` with a simple placeholder page:
-
-<img alt="Screenshot of new Wasp app"
-src={useBaseUrl('img/wasp-new-screenshot.png')}
-height="400px"
-style={{ border: "1px solid black" }}
-/>
-<br />
-<br />
-
-Wasp has generated for you the full front-end and back-end code of the app! Next, we'll take a closer look at how the project is structured.
-
-## A note on supported languages
-
-Wasp supports both JavaScript and TypeScript out of the box, but you are free to choose between or mix JavaScript and TypeScript as you see fit.
-
-We'll provide you with both JavaScript and TypeScript code in this tutorial.
-Code blocks will have a toggle to switch between vanilla JavaScript and TypeScript.
-
-Try it out:
-
-<Tabs groupId="js-ts">
-
-<TabItem value="js" label="JavaScript">
-
-:::note Welcome to JavaScript! 
-
-You are now reading the JavaScript version of the docs. The site will remember your preference as you switch pages.
-
-You'll have a chance to change the language on every code snippet - both the snippets and the text will update accordingly.
-:::
-
-</TabItem>
-<TabItem value="ts" label="TypeScript">
-
-:::note Welcome to TypeScript! 
-
-You are now reading the TypeScript version of the docs. The site will remember your preference as you switch pages.
-
-You'll have a chance to change the language on every code snippet - both the snippets and the text will update accordingly.
-:::
-
-</TabItem>
-</Tabs>
+route RecommendationRoute { path: "/recommendation/:curriculumId", to: RecommendationPage }
+page RecommendationPage {
+  component: import RecommendationPage from "@src/pages/Recommendation.jsx",
+  authRequired: true
+}
